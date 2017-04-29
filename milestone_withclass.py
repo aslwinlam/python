@@ -55,48 +55,57 @@ def alg_moving_avg(filename):
 
 # for index in range(len(closeList),len(closeList)-1):..MOD BY USING CLASS..
     # the trading is on the 21 days counting backward
-    for index in range(len(ROWSOFSTOCKINF) - 1 - 20, 1, -1):
-        sum_close_price = 0.0
-        for x in range(index + 1, index + 21):   # sum of 20 days loop 21-1
-            # close_price = float(closeList[x]) .----..MOD BY USING CLASS
-            close_price = float(ROWSOFSTOCKINF[x].trade_close)
-            sum_close_price = sum_close_price + close_price
-# buy_or_sell(sum_close_price,lowList[index], highList[index])--..MOD BY
-        buy_or_sell(sum_close_price, ROWSOFSTOCKINF[index].trade_low, ROWSOFSTOCKINF[index].trade_high)
+# Buy $1000 of stock base on the the last row's lowest price
 
-    # Looping complete, selling the remain stock if any at the high price of
-    # the day  highList[0]
-    cash = RowOfStockinf.cash
-    if RowOfStockinf.numOfStock > 0:
-     #   cash = RowOfStockinf.numOfStock * float(highList[1]) ............ MOD by USING CLASS
-        cash = RowOfStockinf.numOfStock * float(ROWSOFSTOCKINF[1].trade_high)
-    return 0, cash
+cash =1000
+stock =0
 
-def buy_or_sell(sum_of_close_price, exe_low, exe_high):
-    """ make a buy of sell decison with ratio to closing avg """
-    buying_price = (sum_of_close_price / 20) * .9  # .90 want to buy low (use 10%)
-    # 1.1 want to sell high (use 10%)
-    selling_price = (sum_of_close_price / 20) * 1.1
-# global stockHolding ......MOD BY USE OF CLASS
-# global money......MOD BY USE OF CLASS
-# global stockHolding replaced by RowOfStockinf.numOfStock
-# global money replaced by RowOfStockinf.Cash
-    if buying_price < float(exe_high) and buying_price > float(exe_low):
-       # if money > 0:
-        if RowOfStockinf.cash > 0:
-            #stockHolding = money/float(exe_low)  .......MOD BY USE OF CLASS
-            #money=0.0  ......MOD BY USE OF CLASS
-            RowOfStockinf.numOfStock = RowOfStockinf.cash / float(exe_low)
-            RowOfStockinf.cash = 0.0
-        #    print("BUY")
-    elif selling_price > float(exe_low) and selling_price < float(exe_high):
-        # if stockHolding > 0: ......MOD BY USE OF CLASS
-        #   money = stockHolding*float(exe_high) ......MOD BY USE OF CLASS
-        #stockHolding = 0 ......MOD BY USE OF CLASS
-        if RowOfStockinf.numOfStock > 0:
-            RowOfStockinf.cash = RowOfStockinf.numOfStock * float(exe_high)
-            RowOfStockinf.numOfStock = 0
-           # print("SELL")
+
+    lastRow =len(ROWSOFSTOCKINF) - 1
+    lowPrice = float(ROWSOFSTOCKINF[lastRow].trade_low)
+    highPrice= float(ROWSOFSTOCKINF[lastRow].trade_high)    
+    avgPrice = (lowPrice+highPrice)/2
+
+    pricePay = avgPrice
+    stockHold = 1000/avgPrice
+    cash = 0
+    priceTosell = pricePay + 100/stockHold
+
+# Day trading program
+""" Profit to make $100 per transaction """
+
+
+
+
+
+    for index in range(len(ROWSOFSTOCKINF) - 2, 1, -1):
+        toDaylowPrice = float(ROWSOFSTOCKINF[index].trade_low)    
+        toDayHighPrice = float(ROWSOFSTOCKINF[index].trade_high)
+        executePrice = (toDaylowPrice + toDayHighPrice) / 2
+        
+
+        # SELL CONDITION
+        if cash=0:      
+            if priceTosell < toDayHighPrice and priceTosell > toDaylowPrice:
+            # do my selling
+            cash = stockHold * executePrice
+            stockHold = 0
+            priceToBuy = executePrice * .90
+
+        if stockHold =0:
+            if priceToBuy < toDayHighPrice and priceToBuy > toDaylowPrice:
+                # do my buy
+            stockHold =  cash/ executePrice
+            cash = 0
+            priceTosell = executePrice + 100/stockHold
+
+
+
+
+
+
+
+       
 
 
 main()
